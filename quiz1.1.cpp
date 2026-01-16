@@ -1,55 +1,44 @@
-#include <stdio.h>      
-#include <stdlib.h>   
-#include <unistd.h>     
-#include <sys/wait.h>  
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdio.h>
+using namespace std;
 
-int main(int argc, char *arg[])
+int main()
 {
-    int pid1, pid2, pid3;  
-
-    pid1 = fork();         
-
-    if (pid1 < 0)          
-    {
-        printf("fork failed\n"); 
-        exit(1);         
-    }
-    else if (pid1 == 0)     
-    {
-        printf("Process ID is: %d\n", getpid()); 
-        exit(0);        
-    }
+    int pid1 = fork();
     
-    pid2 = fork();      
-
-    if (pid2 < 0)       
+    if (pid1 < 0)
     {
-        printf("fork failed\n");
-        exit(1);       
+        printf("Fork failed\n");
+        exit(1);
     }
-    else if (pid2 == 0) 
+    else if (pid1 == 0)
     {
-        printf("Process ID is: %d\n", getpid());
-        exit(0);        
+        printf("Child Process 1 ID: %d\n", getpid());
+        
+        int pid2 = fork();
+        
+        if (pid2 < 0)
+        {
+            printf("Fork failed\n");
+            exit(1);
+        }
+        else if (pid2 == 0)
+        {
+            printf("Child Process 2 ID: %d\n", getpid());
+        }
+        else
+        {
+            wait(NULL);
+        }
+        exit(0);
     }
-    
-    pid3 = fork(); 
-
-    if (pid3 < 0)  
+    else
     {
-        printf("fork failed\n"); 
-        exit(1);   
-    }
-    else if (pid3 == 0) 
-    {
-        printf("Process ID is: %d\n", getpid()); 
-        exit(0);   
-    }
-    else            
-    {
-        wait(NULL); 
+        printf("Parent Process ID: %d\n", getpid());
         wait(NULL);
-        wait(NULL); 
-        exit(0);    
     }
+    
+    return 0;
 }
