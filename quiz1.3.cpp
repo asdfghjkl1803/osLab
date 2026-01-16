@@ -19,7 +19,6 @@ int main()
         scanf("%f", &bt[i]);
     }
 
-    // Create a sorted copy for SJF calculation
     int p_sorted[20];
     float bt_sorted[20];
     for (i = 0; i < n; i++)
@@ -28,7 +27,6 @@ int main()
         bt_sorted[i] = bt[i];
     }
 
-    // Sort by burst time
     for (i = 0; i < n - 1; i++)
         for (j = i + 1; j < n; j++)
             if (bt_sorted[i] > bt_sorted[j])
@@ -42,7 +40,6 @@ int main()
                 p_sorted[j] = itemp;
             }
 
-    // Calculate using sorted order
     float wt_sorted[20], tat_sorted[20];
     wt_sorted[0] = 0;
     tat_sorted[0] = bt_sorted[0];
@@ -53,7 +50,6 @@ int main()
         tat_sorted[i] = wt_sorted[i] + bt_sorted[i];
     }
 
-    // Map results back to original process order
     for (i = 0; i < n; i++)
     {
         for (j = 0; j < n; j++)
