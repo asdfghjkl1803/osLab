@@ -6,6 +6,7 @@ int main()
     float bt[20];
     int i, j, n;
     float temp;
+    int itemp;
     float wtavg = 0, tatavg = 0;
 
     printf("Enter the number of processes: ");
@@ -18,37 +19,59 @@ int main()
         scanf("%f", &bt[i]);
     }
 
+    // Create a sorted copy for SJF calculation
+    int p_sorted[20];
+    float bt_sorted[20];
+    for (i = 0; i < n; i++)
+    {
+        p_sorted[i] = p[i];
+        bt_sorted[i] = bt[i];
+    }
+
+    // Sort by burst time
     for (i = 0; i < n - 1; i++)
         for (j = i + 1; j < n; j++)
-            if (bt[i] > bt[j])
+            if (bt_sorted[i] > bt_sorted[j])
             {
-                temp = bt[i];
-                bt[i] = bt[j];
-                bt[j] = temp;
+                temp = bt_sorted[i];
+                bt_sorted[i] = bt_sorted[j];
+                bt_sorted[j] = temp;
 
-                temp = p[i];
-                p[i] = p[j];
-                p[j] = temp;
+                itemp = p_sorted[i];
+                p_sorted[i] = p_sorted[j];
+                p_sorted[j] = itemp;
             }
 
-    wt[0] = 0;
-    tat[0] = bt[0];
+    // Calculate using sorted order
+    float wt_sorted[20], tat_sorted[20];
+    wt_sorted[0] = 0;
+    tat_sorted[0] = bt_sorted[0];
 
     for (i = 1; i < n; i++)
     {
-        wt[i] = wt[i - 1] + bt[i - 1];
-        tat[i] = tat[i - 1] + bt[i];
+        wt_sorted[i] = wt_sorted[i - 1] + bt_sorted[i - 1];
+        tat_sorted[i] = wt_sorted[i] + bt_sorted[i];
     }
 
+    // Map results back to original process order
     for (i = 0; i < n; i++)
     {
+        for (j = 0; j < n; j++)
+        {
+            if (p[i] == p_sorted[j])
+            {
+                wt[i] = wt_sorted[j];
+                tat[i] = tat_sorted[j];
+                break;
+            }
+        }
         wtavg += wt[i];
         tatavg += tat[i];
     }
 
     printf("\nPROCESS\tBURST TIME\tWAITING TIME\tTURNAROUND TIME\n");
     for (i = 0; i < n; i++)
-        printf("P%d\t%.2f\t\t%d\t\t%d\n", p[i], bt[i], wt[i], tat[i]);
+        printf("P%d\t%.2f\t\t%.2f\t\t%.2f\n", p[i], bt[i], (float)wt[i], (float)tat[i]);
 
     printf("\nAverage Waiting Time = %.2f", wtavg / n);
     printf("\nAverage Turnaround Time = %.2f", tatavg / n);
