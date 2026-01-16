@@ -16,45 +16,40 @@ int main(int argc, char *arg[])
     }
     else if (pid1 == 0)     
     {
-        printf("Child 1 Process ID is: %d\n", getpid()); 
+        printf("Process ID is: %d\n", getpid()); 
         exit(0);        
     }
-    else                   
+    
+    pid2 = fork();      
+
+    if (pid2 < 0)       
     {
-        pid2 = fork();      
+        printf("fork failed\n");
+        exit(1);       
+    }
+    else if (pid2 == 0) 
+    {
+        printf("Process ID is: %d\n", getpid());
+        exit(0);        
+    }
+    
+    pid3 = fork(); 
 
-        if (pid2 < 0)       
-        {
-            printf("fork failed\n");
-            exit(1);       
-        }
-        else if (pid2 == 0) 
-        {
-            printf("Child 2 Process ID is: %d\n", getpid());
-            exit(0);        
-        }
-        else               
-        {
-            pid3 = fork(); 
-
-            if (pid3 < 0)  
-            {
-                printf("fork failed\n"); 
-                exit(1);   
-            }
-            else if (pid3 == 0) 
-            {
-                printf("Child 3 Process ID is: %d\n", getpid()); 
-                exit(0);   
-            }
-            else            
-            {
-                printf("Parent Process ID is: %d\n", getpid()); 
-                wait(NULL); 
-                wait(NULL);
-                wait(NULL); 
-                exit(0);    
-            }
-        }
+    if (pid3 < 0)  
+    {
+        printf("fork failed\n"); 
+        exit(1);   
+    }
+    else if (pid3 == 0) 
+    {
+        printf("Process ID is: %d\n", getpid()); 
+        exit(0);   
+    }
+    else            
+    {
+        wait(NULL); 
+        wait(NULL);
+        wait(NULL); 
+        exit(0);    
     }
 }
